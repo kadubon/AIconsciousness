@@ -42,10 +42,7 @@ def run_multi_agent_test():
         print(f"INFO: Agent {agent_id} observes strongest concepts: {strongest_concepts}")
 
         # Create an initial state dictionary with only messages
-        initial_state = {
-            "messages": [HumanMessage(content=agent_input)],
-            "versions_seen": {"__start__": {}} # Explicitly add __start__ for langgraph
-        }
+        initial_state = {"messages": [HumanMessage(content=agent_input)]}
 
         # Run the agent's graph
         events = agent_graph.stream(
