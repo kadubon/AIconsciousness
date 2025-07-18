@@ -1,0 +1,15 @@
+# Core Framework
+langchain
+langgraph
+
+# LLM Integrations (enables flexibility)
+langchain-openai
+langchain-google-genai
+langchain-community
+
+# State & Config
+pydantic
+python-dotenv
+
+# Memory Backends
+redis
