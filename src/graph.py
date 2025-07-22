@@ -12,14 +12,14 @@ import sqlite3
 from langgraph.checkpoint.sqlite import SqliteSaver
 
 from src.state import AgentState
-from src.tools import web_search, add_long_term_memory, search_long_term_memory, reinforce_concept, get_strongest_concepts, add_fact_to_swarm, get_facts_from_swarm
+from src.tools import web_search, add_long_term_memory, search_long_term_memory, reinforce_concept, get_strongest_concepts, add_fact_to_swarm, get_facts_from_swarm, add_task_to_swarm, get_available_tasks_from_swarm, mark_task_completed_in_swarm
 from src.swarm import swarm_environment
 
 # Load environment variables from .env file at the top
 load_dotenv()
 
 # --- 1. Define the Tools and Tool Executor ---
-tools = [web_search, add_long_term_memory, search_long_term_memory, reinforce_concept, get_strongest_concepts, add_fact_to_swarm, get_facts_from_swarm]
+tools = [web_search, add_long_term_memory, search_long_term_memory, reinforce_concept, get_strongest_concepts, add_fact_to_swarm, get_facts_from_swarm, add_task_to_swarm, get_available_tasks_from_swarm, mark_task_completed_in_swarm]
 
 # A simple helper function to execute tools
 def tool_executor(tool_calls: List[dict]) -> List[ToolMessage]:

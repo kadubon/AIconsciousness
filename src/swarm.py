@@ -169,5 +169,94 @@ class SwarmEnvironment:
             logging.error(f"Error retrieving facts with query '{query}': {e}")
             return []
 
+    def add_task(self, description: str, source_agent_id: str) -> str:
+        """
+        Adds a new task to the shared task queue.
+        
+        Args:
+            description (str): A description of the task.
+            source_agent_id (str): The ID of the agent that created the task.
+            
+        Returns:
+            str: A message indicating the result of the operation.
+        """
+        if not self.conn:
+            logging.error("SQLite connection not available for add_task.")
+            return "Error: SQLite not connected."
+        
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute("""
+                INSERT INTO tasks (description, assigned_agent_id)
+                VALUES (?, ?)
+            """, (description, source_agent_id))
+            self.conn.commit()
+            logging.info(f"Agent {source_agent_id} added task: '{description}'.")
+            return f"Task '{description}' added by {source_agent_id}."
+        except sqlite3.Error as e:
+            logging.error(f"Error adding task '{description}': {e}")
+            return f"Error adding task: {e}"
+
+    def get_available_tasks(self, limit: int = 5) -> list[dict]:
+        """
+        Retrieves pending tasks from the shared task queue.
+        
+        Args:
+            limit (int): The maximum number of tasks to retrieve. Defaults to 5.
+            
+        Returns:
+            list[dict]: A list of dictionaries, each containing task details.
+        """
+        if not self.conn:
+            logging.error("SQLite connection not available for get_available_tasks.")
+            return []
+        
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute("""
+                SELECT id, description, assigned_agent_id FROM tasks
+                WHERE status = 'pending'
+                ORDER BY created_at ASC
+                LIMIT ?
+            """, (limit,))
+            return [{"id": row["id"], "description": row["description"], "assigned_agent_id": row["assigned_agent_id"]} for row in cursor.fetchall()]
+        except sqlite3.Error as e:
+            logging.error(f"Error retrieving available tasks: {e}")
+            return []
+
+    def mark_task_as_completed(self, task_id: int, assigned_agent_id: str) -> str:
+        """
+        Marks a task as completed in the shared task queue.
+        
+        Args:
+            task_id (int): The ID of the task to mark as completed.
+            assigned_agent_id (str): The ID of the agent completing the task.
+            
+        Returns:
+            str: A message indicating the result of the operation.
+        """
+        if not self.conn:
+            logging.error("SQLite connection not available for mark_task_as_completed.")
+            return "Error: SQLite not connected."
+        
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute("""
+                UPDATE tasks
+                SET status = 'completed',
+                    completed_at = CURRENT_TIMESTAMP
+                WHERE id = ? AND assigned_agent_id = ?
+            """, (task_id, assigned_agent_id))
+            self.conn.commit()
+            if cursor.rowcount > 0:
+                logging.info(f"Task {task_id} marked as completed by agent {assigned_agent_id}.")
+                return f"Task {task_id} marked as completed."
+            else:
+                logging.warning(f"Task {task_id} not found or not assigned to agent {assigned_agent_id}.")
+                return f"Task {task_id} not found or not assigned to you."
+        except sqlite3.Error as e:
+            logging.error(f"Error marking task {task_id} as completed: {e}")
+            return f"Error marking task as completed: {e}"
+
 # Singleton instance for the swarm environment
 swarm_environment = SwarmEnvironment()

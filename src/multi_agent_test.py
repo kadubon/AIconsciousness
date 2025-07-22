@@ -1,9 +1,7 @@
 import os
 import time
 import logging
-import matplotlib
-matplotlib.use('Agg') # Use non-interactive backend
-import matplotlib.pyplot as plt # Import matplotlib
+
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
 
@@ -41,10 +39,7 @@ def run_multi_agent_test(agents_data: list, test_name: str, disabled_agents: lis
 
     logging.info(f"Multi-Agent Swarm Test Initialized for {test_name}.")
 
-    # Data for visualization
-    concept_strengths_over_time = {}
-    time_steps = []
-    current_time_step = 0
+    
 
     # Periodically evaporate pheromones
     evaporation_interval = 30 # seconds
@@ -93,19 +88,7 @@ def run_multi_agent_test(agents_data: list, test_name: str, disabled_agents: lis
         current_concepts = swarm_environment.get_strongest_concepts()
         logging.info(current_concepts)
 
-        # Record concept strengths for visualization
-        current_time_step += 1
-        time_steps.append(current_time_step)
-        for concept_data in current_concepts:
-            concept_name = concept_data['concept']
-            strength = concept_data['strength']
-            if concept_name not in concept_strengths_over_time:
-                concept_strengths_over_time[concept_name] = [0] * (current_time_step - 1)
-            concept_strengths_over_time[concept_name].append(strength)
-        # Fill in missing values for concepts that didn't appear in this step
-        for concept_name in concept_strengths_over_time:
-            if len(concept_strengths_over_time[concept_name]) < current_time_step:
-                concept_strengths_over_time[concept_name].append(concept_strengths_over_time[concept_name][-1] if concept_strengths_over_time[concept_name] else 0)
+        
 
 
     # After all fact-finding agents have run, create a summarization agent
@@ -128,23 +111,44 @@ def run_multi_agent_test(agents_data: list, test_name: str, disabled_agents: lis
     logging.info("\n--- Multi-Agent Swarm Test Completed ---")
     memory_system.close() # Close DB connections
 
-    # Plotting the concept strengths over time
-    plt.figure(figsize=(10, 6))
-    for concept_name, strengths in concept_strengths_over_time.items():
-        plt.plot(time_steps, strengths, label=concept_name)
-
-    plt.xlabel("Time Step (Agent Run)")
-    plt.ylabel("Concept Strength (Pheromone Level)")
-    plt.title(f"Concept Strength Over Time ({test_name})")
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plot_filename = f"concept_strength_over_time_{test_name}.png"
-    plt.savefig(plot_filename) # Save the plot
-    logging.info(f"Concept strength plot saved to {plot_filename}")
-    if os.path.exists(plot_filename):
-        print(f"File {plot_filename} exists.")
-    else:
-        print(f"File {plot_filename} does NOT exist.")
+    
 
     print(f"\n--- Test '{test_name}' Completed ---")
+
+    if __name__ == "__main__":
+        # Task Sequence 1: Fun Facts
+        logging.info("\n--- Running Task Sequence 1: Fun Facts ---")
+        run_multi_agent_test(
+            agents_data=[
+                {"id": "agent_cat_fact", "input": "Find a fun fact about cats.",
+    "concept_to_reinforce": "cats"},
+                {"id": "agent_dog_fact", "input": "Find a fun fact about dogs.",
+    "concept_to_reinforce": "dogs"},
+                {"id": "agent_bird_fact", "input": "Find a fun fact about birds.",
+    "concept_to_reinforce": "birds"}
+            ],
+            test_name="fun_facts"
+        )
+
+        # Task Sequence 2: Historical Events
+        logging.info("\n--- Running Task Sequence 2: Historical Events ---")
+        run_multi_agent_test(
+            agents_data=[
+                {"id": "agent_ww1_fact", "input": "Summarize a key event from World War 1.",
+    "concept_to_reinforce": "ww1"},
+                {"id": "agent_moon_landing_fact", "input": "Describe the significance of the moon landing.", "concept_to_reinforce": "moon_landing"}
+            ],
+            test_name="historical_events"
+        )
+
+        # Run a self-healing test (e.g., disable agent_dog_fact)
+        # logging.info("\n\n--- Running Self-Healing Test (agent_dog_fact disabled) ---")
+        # run_multi_agent_test(
+        #     agents_data=[
+        #         {"id": "agent_cat_fact", "input": "Find a fun fact about cats.","concept_to_reinforce": "cats"},
+        #         {"id": "agent_dog_fact", "input": "Find a fun fact about dogs.","concept_to_reinforce": "dogs"},
+        #         {"id": "agent_bird_fact", "input": "Find a fun fact about birds.","concept_to_reinforce": "birds"},
+        #     ],
+        #     test_name="self_healing_test",
+        #     disabled_agents=["agent_dog_fact"]
+        # )

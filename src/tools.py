@@ -77,3 +77,21 @@ def get_strongest_concepts(limit: int = 5) -> str:
     if not concepts:
         return "No concepts found in the shared environment."
     return "Strongest concepts: " + ", ".join([f"{c['concept']} (strength: {c['strength']:.2f})" for c in concepts])
+
+@tool
+def add_task_to_swarm(description: str, source_agent_id: str) -> str:
+    """Adds a new task to the shared swarm environment's task queue."""
+    return swarm_environment.add_task(description, source_agent_id)
+
+@tool
+def get_available_tasks_from_swarm(limit: int = 5) -> str:
+    """Retrieves pending tasks from the shared swarm environment's task queue."""
+    tasks = swarm_environment.get_available_tasks(limit)
+    if not tasks:
+        return "No pending tasks found in the shared environment."
+    return "Available tasks: " + ", ".join([f"Task ID: {t['id']}, Description: {t['description']} (from {t['assigned_agent_id']})" for t in tasks])
+
+@tool
+def mark_task_completed_in_swarm(task_id: int, assigned_agent_id: str) -> str:
+    """Marks a task as completed in the shared swarm environment's task queue."""
+    return swarm_environment.mark_task_as_completed(task_id, assigned_agent_id)

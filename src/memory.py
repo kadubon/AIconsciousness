@@ -71,6 +71,17 @@ class LongTermMemorySystem:
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        # Table for shared tasks among agents
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                description TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'pending', -- 'pending', 'in_progress', 'completed'
+                assigned_agent_id TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                completed_at DATETIME
+            )
+        """)
         self.sqlite_conn.commit()
 
     def close(self):
