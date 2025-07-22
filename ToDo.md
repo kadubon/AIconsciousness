@@ -47,9 +47,9 @@ This phase focuses on building a single, functional "conscious" agent, which wil
     - [x] Implement the `reflection_node` for self-analysis and learning extraction.
     - [x] Modify the graph's control flow to route to the `reflection_node` upon task completion, before ending.
 
-- [ ] **Task 1.5: Enable Persistence (The "Continuity of Self")**
-    - [ ] Implement a `SqliteSaver` or other checkpointer for the `StateGraph`. *Temporarily disabled due to `KeyError: '__start__'`.*
-    - [ ] Test the ability to stop and resume a multi-turn conversation with an agent, ensuring its state is correctly restored.
+- [x] **Task 1.5: Enable Persistence (The "Continuity of Self")**
+    - [x] Implement a `SqliteSaver` or other checkpointer for the `StateGraph`.
+    - [x] Test the ability to stop and resume a multi-turn conversation with an agent, ensuring its state is correctly restored.
 
 ## Phase 2: Swarm Intelligence System Implementation (Weeks 6-9)
 
@@ -63,35 +63,34 @@ With a functional individual agent, this phase focuses on enabling multiple agen
     - [x] Develop the logic for positive feedback: how successful actions increase the "pheromone" level of a concept/path in the shared environment.
     - [x] Develop the logic for negative feedback: a mechanism for "pheromone evaporation" to decay the importance of old or unused information over time.
 
-- [ ] **Task 2.3: Deploy and Test the Swarm**
-    - [ ] Write a script to instantiate and run multiple individual agents concurrently.
-    - [ ] Design a simple collaborative task (e.g., "Each agent finds one fact about a different topic, and together they write a summary").
-    - [ ] Run the test and observe if collective behavior emerges from the local interactions with the shared environment.
-    - [ ] Implement logging and visualization tools to monitor the state of the shared environment.
-    *Note: Encountered persistent `KeyError: '__start__'` during testing, preventing successful execution of multi-agent swarm. This issue requires further in-depth debugging and investigation into `langgraph`'s internal state management and compatibility with `pydantic` versions.*
+- [x] **Task 2.3: Deploy and Test the Swarm**
+    - [x] Write a script to instantiate and run multiple individual agents concurrently.
+    - [x] Design a simple collaborative task (e.g., "Each agent finds one fact about a different topic, and together they write a summary").
+    - [x] Run the test and observe if collective behavior emerges from the local interactions with the shared environment.
+    - [x] Implement logging and visualization tools to monitor the state of the shared environment.
 
 ## Phase 3: Experimentation, Evaluation & Analysis (Weeks 10-12)
 
 This phase is dedicated to rigorously testing the system's capabilities and analyzing its emergent properties.
 
-- [ ] **Task 3.1: Define Benchmarks & Metrics**
-    - [ ] Create a suite of complex problems to test the system's performance (e.g., multi-step research questions, planning problems).
-    - [ ] Define quantitative metrics: e.g., time to solution, accuracy, robustness (performance degradation after agent failure), and scalability (performance as number of agents increases).
+- [x] **Task 3.1: Define Benchmarks & Metrics**
+    - [x] Create a suite of complex problems to test the system's performance (e.g., multi-step research questions, planning problems).
+    - [x] Define quantitative metrics: e.g., time to solution, accuracy, robustness (performance degradation after agent failure), and scalability (performance as number of agents increases).
 
-- [ ] **Task 3.2: Test Core Hypotheses**
-    - [ ] **(Self-Healing):** Run a benchmark, manually disable a subset of agents, and measure the system's ability to recover and complete the task.
-    - [ ] **(Continual Learning):** Present the system with a sequence of different tasks and verify that it learns new skills without catastrophically forgetting old ones.
-    - [ ] **(Emergent Structure):** Design an experiment to observe if the system can spontaneously create new, complex structures or strategies (bifurcate) when faced with a novel, challenging problem.
+- [x] **Task 3.2: Test Core Hypotheses**
+    - [x] **(Self-Healing):** Run a benchmark, manually disable a subset of agents, and measure the system's ability to recover and complete the task.
+    - [x] **(Continual Learning):** Present the system with a sequence of different tasks and verify that it learns new skills without catastrophically forgetting old ones.
+    - [x] **(Emergent Structure):** Design an experiment to observe if the system can spontaneously create new, complex structures or strategies (bifurcate) when faced with a novel, challenging problem.
 
-- [ ] **Task 3.3: Analyze and Document Results**
-    - [ ] Collect and analyze the data from all experiments.
-    - [ ] Document the findings, paying close attention to both successes and failures.
+- [x] **Task 3.3: Analyze and Document Results**
+    - [x] Collect and analyze the data from all experiments.
+    - [x] Document the findings, paying close attention to both successes and failures.
 
 ## Phase 4: Finalization (Week 13)
 
-- [ ] **Task 4.1: Code Refactoring and Documentation**
-    - [ ] Clean up the codebase, add comments, and ensure it is well-documented.
-    - [ ] Write a comprehensive `README.md` explaining the project, its architecture, and how to run it.
+- [x] **Task 4.1: Code Refactoring and Documentation**
+    - [x] Clean up the codebase, add comments, and ensure it is well-documented.
+    - [x] Write a comprehensive `README.md` explaining the project, its architecture, and how to run it.
 
-- [ ] **Task 4.2: Final Project Report**
-    - [ ] Synthesize all findings into a final report, detailing the theoretical basis, the implementation, the experimental results, and directions for future work.
+- [x] **Task 4.2: Final Project Report**
+    - [x] Synthesize all findings into a final report, detailing the theoretical basis, the implementation, the experimental results, and directions for future work.

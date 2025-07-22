@@ -1,30 +1,37 @@
 import os
 import time
+import logging
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
 
 from src.graph import agent_graph
 from src.swarm import swarm_environment
+from src.memory import memory_system
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main():
-    """Main function to run the agent.
-    
-    This function sets up a simple command-line interface to interact with the
-    cognitive agent. It maintains the conversation state for a single session.
     """
-    # Load environment variables from .env file
+    Main function to run the interactive cognitive agent.
+
+    This function initializes the agent, handles user input via a command-line
+    interface, and manages the agent's interaction loop. It also periodically
+    triggers pheromone evaporation in the swarm environment.
+    """
+    # Load environment variables from .env file. This should be done early.
     load_dotenv()
     
-    # Check if the Google API key is set
+    # Ensure the GOOGLE_API_KEY is set for LLM interactions.
     if not os.getenv("GOOGLE_API_KEY"):
-        print("Error: GOOGLE_API_KEY environment variable not set.")
-        print("Please create a .env file and add your key, e.g., GOOGLE_API_KEY='YourAPIKeyHere'")
+        logging.error("GOOGLE_API_KEY environment variable not set. Please set it in a .env file.")
+        logging.info("Example: GOOGLE_API_KEY='YourActualGoogleAPIKey'")
         return
 
-    print("INFO: Cognitive Agent Initialized. Type 'exit' to quit.")
+    logging.info("Cognitive Agent Initialized. Type 'exit' to quit the session.")
     
-    # A simple configuration to manage the conversation state. 
-    # For multi-user or persistent scenarios, this would be more sophisticated.
+    # Configuration for the agent's state. 'thread_id' is used by the checkpointer
+    # to uniquely identify and persist the conversation state for this session.
     config = {"configurable": {"thread_id": "user_session_1"}}
 
     # Timer for pheromone evaporation
@@ -38,7 +45,7 @@ def main():
             if current_time - last_evaporation_time > evaporation_interval:
                 swarm_environment.evaporate()
                 last_evaporation_time = current_time
-                print("INFO: Pheromones evaporated.")
+                logging.info("Pheromones evaporated.")
 
             user_input = input("You: ")
             if user_input.lower() == 'exit':
@@ -57,11 +64,10 @@ def main():
                     event["messages"][-1].pretty_print()
 
     except KeyboardInterrupt:
-        print("\nExiting...")
-        break
+        logging.info("Exiting...")
     finally:
         # Ensure Neo4j connection is closed on exit
-        swarm_environment.close()
+        memory_system.close()
 
 if __name__ == "__main__":
     main()

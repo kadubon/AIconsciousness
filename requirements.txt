@@ -1,6 +1,7 @@
 # Core Framework
 langchain
 langgraph
+langgraph-checkpoint-sqlite
 
 # LLM Integrations (enables flexibility)
 langchain-openai
@@ -8,8 +9,9 @@ langchain-google-genai
 langchain-community
 
 # State & Config
-pydantic==1.10.17
+pydantic>=2.8.0
 python-dotenv
 
 # Memory Backends
 redis
+matplotlib
